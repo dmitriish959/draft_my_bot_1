@@ -13,6 +13,10 @@ def start(message):
 def hello(message):
     bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'. format(name=message.text))
 
+def cars(message):
+    sent.bot_message(message.chat.id, 'Выберите марку ТС')
 
 # Функция polling заставляет нашего бота постоянно контачить с ТГ
 bot.polling()
+
+
