@@ -7,7 +7,7 @@ from env import MY_TOKEN
 # передача токена
 bot = telebot.TeleBot(MY_TOKEN)
 
-
+# no test
 # Обработчик отвечающий на команду старт
 @bot.message_handler(commands=['start'])
 # Функция спрашивающая имя
