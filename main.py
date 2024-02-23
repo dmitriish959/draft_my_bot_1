@@ -6,8 +6,6 @@ from env import MY_TOKEN
 
 # передача токена
 bot = telebot.TeleBot(MY_TOKEN)
-# Обработчик отвечающий на команду старт
-bot.message_handler(commands=['start'])
 
 
 # Функция спрашивающая имя
@@ -28,8 +26,9 @@ def start(message):
     # bot.register_next_step_handler(sent, hello)
 
 
+@bot.message_handler(commands=['start', 'help'])
 def hello(message):
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
+    bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.chat.username))
 
 
 # def cars(message):
