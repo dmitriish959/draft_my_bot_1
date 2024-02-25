@@ -1,11 +1,14 @@
-import sqlite3
-
+import sent as sent
 import telebot
-from peewee import DoesNotExist
+from peewee import DoesNotExist, CharField, Model
 # импорт токена
 from env import MY_TOKEN
 from models import User
 from databases import db
+from peewee import SqliteDatabase
+
+# Создание таблицы
+db = SqliteDatabase('bot.db')
 
 # передача токена
 bot = telebot.TeleBot(MY_TOKEN)
@@ -17,15 +20,6 @@ db.create_tables([User, ])
 @bot.message_handler(commands=['start'])
 # Функция спрашивающая имя
 def start(message):
-    # создание БД
-    conn = sqlite3.connect('registr.sql')
-    cur = conn.cursor()
-
-    cur.execute('CREATE TABLE IF NOT EXISTS user(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
-    conn.commit()
-    cur.close()
-    conn.close()
-
     bot.send_message(message.chat.id, 'Привет')
     bot.register_next_step_handler(message, user_name)
 
@@ -33,7 +27,26 @@ def start(message):
 def user_name(message):
     sent = bot.send_message(message.chat.id, 'Как тебя завут?')
     bot.register_next_step_handler(sent, hello)
+class User(Model):
+    name = CharField()
 
+    class Meta:
+        database = db
+
+
+# Подключаемся к базе данных
+db.connect()
+
+# Создаем таблицу для модели User
+db.create_tables([User, ])
+
+# Создаем новую запись пользователя с именем 'Alice'
+user = User(name = user_name)
+user.save()
+
+
+# Закрываем соединение с базой данных после завершения всех операций
+db.close()
 
 def hello(message):
     bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
@@ -53,6 +66,7 @@ def hello(message):
 @bot.message_handler(commands=['create'])
 def create_user(message):
     db.connect()
+    db.create_tables([User, user_name])
     try:
         user_db = User.select().where(User.name == message.chat.username).get()
     except DoesNotExist:
