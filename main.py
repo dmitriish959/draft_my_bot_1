@@ -1,4 +1,3 @@
-import sent as sent
 import telebot
 from peewee import DoesNotExist, CharField, Model
 # импорт токена
@@ -27,11 +26,12 @@ def start(message):
 def user_name(message):
     sent = bot.send_message(message.chat.id, 'Как тебя завут?')
     bot.register_next_step_handler(sent, hello)
-class User(Model):
-    name = CharField()
 
-    class Meta:
-        database = db
+
+def hello(message):
+    user = User(name=message.text)
+    user.save()
+    bot.send_message(message.chat.id, f'Привет, {user.name}!')
 
 
 # Подключаемся к базе данных
@@ -40,19 +40,16 @@ db.connect()
 # Создаем таблицу для модели User
 db.create_tables([User, ])
 
-# Создаем новую запись пользователя с именем 'Alice'
-user = User(name = user_name)
-user.save()
+# Запускаем бота
+bot.polling()
 
 
-# Закрываем соединение с базой данных после завершения всех операций
-db.close()
-
-def hello(message):
-    bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
-    # cur.execute('')
-    # sent = bot.send_message(message.chat.id, 'Как тебя завут?')
-    # bot.register_next_step_handler(sent, hello)
+# Тут функция просто отвечает что рада видеть не сохраняя в БД
+# def hello(message):
+# bot.send_message(message.chat.id, 'Привет, {name}. Рад тебя видеть.'.format(name=message.text))
+# cur.execute('')
+# sent = bot.send_message(message.chat.id, 'Как тебя завут?')
+# bot.register_next_step_handler(sent, hello)
 
 
 # def hello(message):
