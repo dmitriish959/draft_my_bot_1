@@ -1,6 +1,7 @@
 import telebot
 from peewee import DoesNotExist, CharField, Model
 # импорт токена
+from telebot import types
 from env import MY_TOKEN
 from models import User
 from databases import db
@@ -25,6 +26,8 @@ def start(message):
 
 def user_name(message):
     sent = bot.send_message(message.chat.id, 'Как тебя завут?')
+    # Эта команда означает, что после отправки сообщения sent бот будет ожидать следующего шага, который будет обработан функцией hello.
+    # То есть, когда пользователь отправит сообщение sent, бот перейдет к выполнению функции hello, которая будет обрабатывать следующий шаг в диалоге.
     bot.register_next_step_handler(sent, hello)
 
 
@@ -42,6 +45,24 @@ db.create_tables([User, ])
 
 # Запускаем бота
 bot.polling()
+
+
+# Отображение кнопок
+# reply_markup=mykup
+@bot.message_handler(content_types=['cars'])
+def cars(message):
+    mykup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    btn1 = types.KeyboardButton('Марки ТС')
+    btn2 = types.KeyboardButton('Объем')
+    btn3 = types.KeyboardButton('Help')
+    mykup.add(btn1, btn2, btn3)
+    bot.send_message(message.chat.id, f'Привет, {user.name}!', reply_markup=mykup)
+#def interesing(message):
+    #wen = bot.send_message(message.chat.id, 'Вы хотите выбрать марку машины ?')
+    #bot.register_next_step_handler(wen, cars)
+
+
+
 
 
 # Тут функция просто отвечает что рада видеть не сохраняя в БД
