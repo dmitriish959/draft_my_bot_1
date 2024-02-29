@@ -47,16 +47,23 @@ db.create_tables([User, ])
 bot.polling()
 
 
+
+bot.send_message(message.chat.id, car)
+
 # Отображение кнопок
 # reply_markup=mykup
-@bot.message_handler(content_types=['cars'])
-def cars(message):
+@bot.message_handler(content_types=['car'])
+def car(message):
     mykup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     btn1 = types.KeyboardButton('Марки ТС')
-    btn2 = types.KeyboardButton('Объем')
+    btn2 = types.KeyboardButton('Форма и Объем')
     btn3 = types.KeyboardButton('Help')
     mykup.add(btn1, btn2, btn3)
-    bot.send_message(message.chat.id, f'Привет, {user.name}!', reply_markup=mykup)
+    bot.send_message(message.chat.id, 'Выберете нужный пункт', reply_markup=mykup)
+
+
+
+
 #def interesing(message):
     #wen = bot.send_message(message.chat.id, 'Вы хотите выбрать марку машины ?')
     #bot.register_next_step_handler(wen, cars)
